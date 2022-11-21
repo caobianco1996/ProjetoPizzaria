@@ -4,18 +4,19 @@ interface OrderRequest{
     order_id: string;
 }
 
-class SendOrderService{
+class FinishOrderService{
     async execute({order_id}: OrderRequest){
         const order = await prismaClient.order.update({
             where:{
                 id: order_id
-            }, 
-            data:{
-                draft:false
-            }
+        },
+        data:{
+            status: true,
+        }
         })
+
         return order;
     }
 }
 
-export {SendOrderService}
+export {FinishOrderService}
