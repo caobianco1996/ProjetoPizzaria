@@ -4,11 +4,16 @@ import cors from 'cors';
 import path from 'path';
 import multer from 'multer';
 
+import { AppError } from './errors/AppError';
 import { router } from './routes';
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(cors());
+
+app.get('/health', (_request, response) => {
+  return response.status(200).json({ status: 'ok' });
+});
 
 app.use(router);
 app.use('/files', express.static(path.resolve(__dirname, '..', 'tmp')));
@@ -21,6 +26,13 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof Error && err.message.startsWith('Formato de imagem')) {
     return res.status(400).json({ error: err.message });
   }
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+
   console.error(err);
   return res.status(500).json({
     status: 'error',
@@ -28,4 +40,7 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-app.listen(3333, () => console.log('Servidor online!!!'));
+const configuredPort = Number(process.env.PORT);
+const port = Number.isInteger(configuredPort) && configuredPort > 0 ? configuredPort : 3333;
+
+app.listen(port, () => console.log(`Pizzaria API listening on port ${port}`));
