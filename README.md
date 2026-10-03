@@ -26,12 +26,12 @@ yarn prisma migrate dev
 yarn dev
 ~~~
 
-O servidor de desenvolvimento escuta na porta 3333. Consulte as rotas em src/routes para localizar os endpoints disponíveis.
+O servidor usa a porta 3333 por padrão; configure PORT para escolher outra. Consulte as rotas em src/routes.ts. O endpoint GET http://localhost:3333/health retorna o estado básico do servidor.
 
 ## Testes e verificação manual
 
-O package.json não define scripts de teste, então yarn test não está configurado. Para uma verificação inicial, mantenha a API em execução e consulte uma rota GET existente com navegador ou curl. Para testar criação/edição, use dados descartáveis no banco local e confira o estado persistido.
+O package.json não define scripts de teste, então yarn test não está configurado. Para uma verificação inicial, consulte /health. Depois, use uma rota GET existente e dados descartáveis no banco local para validar criação e leitura de registros. O cadastro valida nome, formato do e-mail e tamanho mínimo da senha; e-mails são normalizados para minúsculas.
 
 ## Cuidados conhecidos
 
-Uploads aceitam JPG, PNG ou WEBP até 5 MB. Pedidos devem ser alterados apenas enquanto estiverem em rascunho; valide autorização e transições antes de uso com clientes. O projeto ainda precisa de testes de integração, política explícita de CORS e configuração própria para produção.
+Uploads aceitam JPG, PNG ou WEBP até 5 MB. Pedidos devem ser alterados apenas enquanto estiverem em rascunho; valide autorização e transições antes de uso com clientes. O projeto ainda precisa de testes de integração e política explícita de CORS para produção.
